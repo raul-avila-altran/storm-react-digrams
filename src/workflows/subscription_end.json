@@ -1,0 +1,487 @@
+﻿{
+  "workflows": [
+    {
+      "name": "finalize_subscription_any_cb",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_ekomi_url",
+          "type": "generate_ekomi_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_ekomi_url"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_subscription_b2c_sepa",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },        {
+          "name": "generate_ekomi_url",
+          "type": "generate_ekomi_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_ekomi_url"
+          ]
+        },
+        {
+          "name": "generate_sepa_mandate_url",
+          "type": "generate_sepa_mandate_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_sepa_mandate_url"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "get_sepa_mandate",
+          "type": "get_sepa_mandate",
+          "waitForReturn": "false",
+          "queue": "goCardLess",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_subscription_partner_none_survey",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_ekomi_url",
+          "type": "generate_ekomi_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_ekomi_url"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_subscription_partner_none",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "create_partner_payment_transaction",
+          "type": "create_partner_payment_transaction",
+          "options": {
+            "PARTNER_TRANSACTION_PREFIX": "AMEX"
+          },
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "confirm_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_subscription_partner_sepa",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_ekomi_url",
+          "type": "generate_ekomi_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "create_payment_method",
+          "type": "create_payment_method",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_ekomi_url"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_method"
+          ]
+        },
+        {
+          "name": "generate_sepa_mandate_url",
+          "type": "generate_sepa_mandate_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_sepa_mandate_url"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "get_sepa_mandate",
+          "type": "get_sepa_mandate",
+          "waitForReturn": "false",
+          "queue": "goCardLess",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_electronic_signature_subscription",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "update_esignature_if_ok_status",
+          "type": "update_esignature_if_ok_status",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "save_esigned_documents",
+          "type": "save_esigned_documents",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "update_esignature_if_ok_status"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "save_esigned_documents"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "PARTNER_NAME": "AMEX"
+          },
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "create_partner_payment_transaction",
+          "type": "create_partner_payment_transaction",
+          "options": {
+            "PARTNER_TRANSACTION_PREFIX": "AMEX"
+          },
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "confirm_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "finalize_service_subscription_b2c_cb_idd_compliant",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "true",
+          "queue": "archive-subscription",
+          "dependsOn": [
+            "confirm_policy"
+          ]
+        }
+      ]
+    }
+  ]
+}

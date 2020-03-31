@@ -1,0 +1,201 @@
+{
+  "workflows": [
+    {
+      "name": "notify_policy_created",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "withClaims": "true",
+            "check_policy_status": "ACTIVE"
+          }
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "CREATED"
+          },
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "notify_policy_updated",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "withClaims": "true",
+            "check_policy_status": "ACTIVE"
+          }
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "UPDATED"
+          },
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "notify_policy_cancelled_without_payment",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "check_policy_status": "CANCELLED"
+          }
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "CANCELLED"
+          },
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "notify_policy_cancelled_without_refund",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "check_policy_status": "CANCELLED"
+          }
+        },
+        {
+          "name": "cancel_payment",
+          "type": "cancel_payment",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "CANCELLED"
+          },
+          "dependsOn": [
+            "cancel_payment"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "notify_policy_cancelled_with_refund",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "check_policy_status": "CANCELLED"
+          }
+        },
+        {
+          "name": "refund_payment",
+          "type": "refund_payment",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "name": "cancel_payment",
+          "type": "cancel_payment",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "refund_payment"
+          ]
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "CANCELLED"
+          },
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "notify_policy_suspended",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "check_policy_status": "ACTIVE"
+          }
+        },
+        {
+          "name": "notify_claims",
+          "type": "notify_claims",
+          "waitForReturn": "false",
+          "queue": "claims",
+          "options": {
+            "type": "SUSPENDED"
+          },
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        }
+      ]
+    }
+  ]
+}

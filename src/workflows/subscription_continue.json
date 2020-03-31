@@ -1,0 +1,287 @@
+﻿{
+  "workflows": [
+    {
+      "name": "continue_subscription_b2c_any_idd_compliant",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "get_prepayment_info",
+          "type": "get_prepayment_info",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "get_prepayment_info"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "false",
+          "queue": "archive-subscription",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "continue_subscription_partner_none_idd_compliant",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        }
+      ]
+    },
+    {
+      "name": "continue_subscription_partner_cb_idd_compliant",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "false",
+          "queue": "archive-subscription",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "continue_subscription_partner_sepa_idd_compliant",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "false",
+          "queue": "zuora",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "false",
+          "queue": "archive-subscription",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "continue_subscribe_partner_none_idd_compliant",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "continue_subscribe_partner_sepa_idd_compliant",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "create_payment_method",
+          "type": "create_payment_method",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        },
+        {
+          "name": "generate_sepa_mandate_url",
+          "type": "generate_sepa_mandate_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_method"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_sepa_mandate_url"
+          ]
+        },
+        {
+          "name": "get_sepa_mandate",
+          "type": "get_sepa_mandate",
+          "waitForReturn": "false",
+          "queue": "goCardLess",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "confirm_policy"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "continue_service_subscription_b2c_cb_idd_compliant",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "get_prepayment_info",
+          "type": "get_prepayment_info",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "true",
+          "queue": "zuora",
+          "dependsOn": [
+            "get_prepayment_info"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        }
+      ]
+    }
+  ]
+}
+

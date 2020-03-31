@@ -1,0 +1,25 @@
+{
+  "workflows": [
+    {
+      "name": "policy_renewal",
+      "type": "policyrenewal",
+      "tasks": [
+        {
+          "name": "renew_payment",
+          "type": "renew_payment",
+          "waitForReturn": "false",
+          "queue": "zuora"
+        },
+        {
+          "name": "renew_policy",
+          "type": "renew_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "renew_payment"
+          ]
+        }
+      ]
+    }
+  ]
+}

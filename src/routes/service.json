@@ -1,0 +1,10 @@
+[
+  {
+    "type": "SERVICE_NOTIFICATION",
+    "clientId": "9838dd25",
+    "paymentType": null,
+    "workflow": "service_notification",
+    "sequence": "ONE_CALL",
+    "partner": false
+  }
+]

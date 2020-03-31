@@ -1,0 +1,348 @@
+{
+  "workflows": [
+    {
+      "name": "subscribe_backmarket",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_draft_policy_number",
+          "type": "generate_draft_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_draft_policy_number"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "create_customer_and_policy",
+          "type": "create_customer_and_policy",
+          "waitForReturn": "true",
+          "options": {
+            "PAYMENT_MANAGED_BY_AXA": "false"
+          },
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_customer_and_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "subscribe_partner_none",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_draft_policy_number",
+          "type": "generate_draft_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_draft_policy_number"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "create_customer_and_policy",
+          "type": "create_customer_and_policy",
+          "waitForReturn": "false",
+          "options": {
+            "PAYMENT_MANAGED_BY_AXA": "false"
+          },
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_customer_and_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "subscribe_partner_sepa",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_draft_policy_number",
+          "type": "generate_draft_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_final_policy_number",
+          "type": "generate_final_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_draft_policy_number"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "false"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_final_policy_number"
+          ]
+        },
+        {
+          "name": "create_payment_catalog_entry",
+          "type": "create_payment_catalog_entry",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "create_payment_method",
+          "type": "create_payment_method",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_catalog_entry"
+          ]
+        },
+        {
+          "name": "generate_sepa_mandate_url",
+          "type": "generate_sepa_mandate_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_payment_method"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_sepa_mandate_url"
+          ]
+        },
+        {
+          "name": "create_customer_and_policy",
+          "type": "create_customer_and_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "get_sepa_mandate",
+          "type": "get_sepa_mandate",
+          "waitForReturn": "false",
+          "queue": "goCardLess",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "confirm_policy",
+          "type": "confirm_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_customer_and_policy"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_customer_and_policy"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "subscribe_partner_any_idd_compliant",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "check_quoting",
+          "type": "check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_draft_policy_number",
+          "type": "generate_draft_policy_number",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "check_quoting"
+          ]
+        },
+        {
+          "name": "generate_policy_certificate_url",
+          "type": "generate_policy_certificate_url",
+          "options": {
+            "DRAFT_CERTIFICATE": "true"
+          },
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_draft_policy_number"
+          ]
+        },
+        {
+          "name": "create_customer_and_policy",
+          "type": "create_customer_and_policy",
+          "waitForReturn": "false",
+          "options": {
+            "PAYMENT_MANAGED_BY_AXA": "false",
+            "IDD_COMPLIANT": "true"
+          },
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_policy_certificate_url"
+          ]
+        },
+        {
+          "name": "archive_subscription",
+          "type": "archive_subscription",
+          "waitForReturn": "false",
+          "queue": "archive-subscription",
+          "dependsOn": [
+            "create_customer_and_policy"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "group_subscribe_b2b_any",
+      "type": "groupsubscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "group_check_quoting",
+          "type": "group_check_quoting",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "generate_group_draft_policy_numbers",
+          "type": "generate_group_draft_policy_numbers",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "group_check_quoting"
+          ]
+        },
+        {
+          "name": "generate_group_final_policy_numbers",
+          "type": "generate_group_final_policy_numbers",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_group_draft_policy_numbers"
+          ]
+        },
+        {
+          "name": "generate_group_policies_certificate_url",
+          "type": "generate_group_policies_certificate_url",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "generate_group_final_policy_numbers"
+          ]
+        },
+        {
+          "name": "create_group_policies",
+          "type": "create_group_policies",
+          "waitForReturn": "false",
+          "options": {
+            "PAYMENT_MANAGED_BY_AXA": "false"
+          },
+          "queue": "salesforce",
+          "dependsOn": [
+            "generate_group_policies_certificate_url"
+          ]
+        },
+        {
+          "name": "confirm_group_policies",
+          "type": "confirm_group_policies",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_group_policies"
+          ]
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,117 @@
+{
+  "workflows": [
+    {
+      "name": "processed_payment_notification",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "withClaims": "false",
+            "check_policy_status_not": "DRAFT"
+          }
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "singleParameter": "false"
+          },
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "refund_processed_payment_notification",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "withClaims": "false",
+            "check_policy_status_not": "DRAFT"
+          }
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "singleParameter": "false"
+          },
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "declined_payment_notification",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "retrieve_policy",
+          "type": "retrieve_policy",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "withClaims": "false"
+          }
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "dependsOn": [
+            "retrieve_policy"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "false",
+          "queue": "salesforce",
+          "options": {
+            "singleParameter": "false"
+          },
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "type": "RENEW_POLICY",
+    "clientId": "mi-795aaf7e",
+    "paymentType": "NONE",
+    "workflow": "policy_renewal",
+    "sequence": "ONE_CALL",
+    "partner": false
+  }
+]

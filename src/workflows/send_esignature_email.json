@@ -1,0 +1,24 @@
+{
+  "workflows": [
+    {
+      "name": "send_esignature_email",
+      "type": "subscription",
+      "removeAtEnd": "true",
+      "tasks": [
+        {
+          "name": "create_electronic_signature_request",
+          "type": "create_electronic_signature_request",
+          "waitForReturn": "true"
+        },
+        {
+          "name": "send_electronic_signature_link",
+          "type": "send_electronic_signature_link",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "create_electronic_signature_request"
+          ]
+        }
+      ]
+    }
+  ]
+}

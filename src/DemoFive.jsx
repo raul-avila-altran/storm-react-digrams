@@ -23,8 +23,8 @@ class DemoFive extends React.Component {
 		return (
 			<div className="content">
 				<TrayWidget>
-					<TrayItemWidget model={{ type: 'in' }} name="In Node" color="peru" />
-					<TrayItemWidget model={{ type: 'out' }} name="Out Node" color="hotpink" />
+					<TrayItemWidget model={{ type: 'in' }} name="Task" color="green" />
+					<TrayItemWidget model={{ type: 'out' }} name="Workflow" color="yellow" />
 				</TrayWidget>
 				<div
 					className="diagram-layer"
@@ -33,10 +33,10 @@ class DemoFive extends React.Component {
 						var nodesCount = Lodash.keys(this.engine.getDiagramModel().getNodes()).length;
 						var node = null;
 						if (data.type === 'in') {
-							node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'peru');
+							node = new DefaultNodeModel('Task ' + (nodesCount + 1), 'green');
 							node.addPort(new DefaultPortModel(true, 'in-1', 'In'));
 						} else {
-							node = new DefaultNodeModel('Node ' + (nodesCount + 1), 'hotpink');
+							node = new DefaultNodeModel('Worklow ' + (nodesCount + 1), 'yellow');
 							node.addPort(new DefaultPortModel(false, 'out-1', 'Out'));
 						}
 						var points = this.engine.getRelativeMousePoint(event);

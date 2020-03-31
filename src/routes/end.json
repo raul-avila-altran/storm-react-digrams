@@ -1,0 +1,178 @@
+[
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "b9bbd1ad",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "b9bbd1ad",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_b2c_sepa",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+    {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "7c16135f",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "7c16135f",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_b2c_sepa",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "47afaca1",
+    "paymentType": "NONE",
+    "workflow": "finalize_subscription_partner_none_survey",
+    "sequence": "TWO_CALL",
+    "partner": true
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "47afaca1",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "TWO_CALL",
+    "partner": true,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "47afaca1",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_partner_sepa",
+    "sequence": "TWO_CALL",
+    "partner": true,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "ae09e520",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "ae09e520",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_b2c_sepa",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+    {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "8e928312",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "8e928312",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_b2c_sepa",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "NONE",
+    "workflow": "finalize_subscription_partner_none_survey",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "SEPA",
+    "workflow": "finalize_subscription_partner_sepa",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "e6854d90",
+    "paymentType": "NONE",
+    "workflow": "finalize_electronic_signature_subscription",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "managedByAxa": false,
+    "electronicSignature": true
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "e6854d90",
+    "paymentType": "NONE",
+    "workflow": "finalize_subscription_partner_none",
+    "sequence": "TWO_CALL",
+    "partner": false,
+    "managedByAxa": false,
+    "electronicSignature": false
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "9838dd25",
+    "paymentType": "CB",
+    "workflow": "finalize_service_subscription_b2c_cb_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "electronicSignature": false
+  },
+  {
+    "type": "FINALIZE_SUBSCRIPTION",
+    "clientId": "03616503",
+    "paymentType": "CB",
+    "workflow": "finalize_subscription_any_cb",
+    "sequence": "TWO_CALL",
+    "partner": true,
+    "electronicSignature": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  }
+]

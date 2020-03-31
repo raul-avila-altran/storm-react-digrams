@@ -1,0 +1,54 @@
+[
+  {
+    "type": "INITIALIZE_SUBSCRIPTION",
+    "clientId": "bd194c0f",
+    "paymentType": "NONE",
+    "workflow": "subscribe_partner_none",
+    "sequence": "ONE_CALL",
+    "partner": true
+  },
+  {
+    "type": "INITIALIZE_SUBSCRIPTION",
+    "clientId": "agent-channel",
+    "paymentType": "NONE",
+    "workflow": "subscribe_partner_none",
+    "managedByAxa": false,
+    "sequence": "ONE_CALL",
+    "partner": false
+  },
+  {
+    "type": "INITIALIZE_SUBSCRIPTION",
+    "clientId": "bd194c0f",
+    "paymentType": "SEPA",
+    "workflow": "subscribe_partner_sepa",
+    "sequence": "ONE_CALL",
+    "partner": true,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "INITIALIZE_SUBSCRIPTION",
+    "clientId": "b2ee3c4e",
+    "paymentType": null,
+    "workflow": "subscribe_partner_any_idd_compliant",
+    "sequence": "TWO_CALL_IDD",
+    "partner": true
+  },
+  {
+    "type": "INITIALIZE_SUBSCRIPTION",
+    "clientId": "12949a87",
+    "paymentType": "NONE",
+    "workflow": "subscribe_backmarket",
+    "sequence": "ONE_CALL",
+    "partner": true
+  },
+  {
+    "type": "INITIALIZE_GROUP_SUBSCRIPTION",
+    "clientId": "agent-channel",
+    "paymentType": "NONE",
+    "workflow": "group_subscribe_b2b_any",
+    "managedByAxa": false,
+    "sequence": "ONE_CALL",
+    "partner": false
+  }
+]

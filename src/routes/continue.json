@@ -1,0 +1,98 @@
+[
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "ae09e520",
+    "paymentType": "CB",
+    "workflow": "continue_subscription_b2c_any_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "ae09e520",
+    "paymentType": "SEPA",
+    "workflow": "continue_subscription_b2c_any_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+   {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "8e928312",
+    "paymentType": "CB",
+    "workflow": "continue_subscription_b2c_any_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+   {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "8e928312",
+    "paymentType": "SEPA",
+    "workflow": "continue_subscription_b2c_any_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "NONE",
+    "workflow": "continue_subscription_partner_none_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "CB",
+    "workflow": "continue_subscription_partner_cb_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true,
+    "pageId": "2c92c0f96454a71d01646a2af3c159ce",
+    "paymentGateway": "GlobalCollect004"
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "2dcdbcd1",
+    "paymentType": "SEPA",
+    "workflow": "continue_subscription_partner_sepa_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": true,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "b2ee3c4e",
+    "paymentType": "NONE",
+    "workflow": "continue_subscribe_partner_none_idd_compliant",
+    "sequence": "TWO_CALL_IDD",
+    "partner": true
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "b2ee3c4e",
+    "paymentType": "SEPA",
+    "workflow": "continue_subscribe_partner_sepa_idd_compliant",
+    "sequence": "TWO_CALL_IDD",
+    "partner": true,
+    "pageId": "2c92c0f8644618e801646b219ab87011",
+    "paymentGateway": "GoCardless004"
+  },
+  {
+    "type": "CONTINUE_SUBSCRIPTION",
+    "clientId": "9838dd25",
+    "paymentType": "CB",
+    "workflow": "continue_service_subscription_b2c_cb_idd_compliant",
+    "sequence": "THREE_CALL_IDD",
+    "partner": false,
+    "pageId": "2c92c0f96e16d351016e1c189001500b",
+    "paymentGateway": "GlobalCollect004"
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "workflows": [
+    {
+      "name": "service_notification",
+      "type": "subscription",
+      "tasks": [
+        {
+          "name": "retrieve_subscription",
+          "type": "retrieve_subscription",
+          "waitForReturn": "true",
+          "options": {
+            "check_policy_status": "ACTIVE"
+          }
+        },
+        {
+          "name": "update_status_executed",
+          "type": "update_status_executed",
+          "waitForReturn": "true",
+          "queue": "salesforce",
+          "dependsOn": [
+            "retrieve_subscription"
+          ]
+        },
+        {
+          "name": "subscribe_payment",
+          "type": "subscribe_payment",
+          "waitForReturn": "true",
+          "dependsOn": [
+            "update_status_executed"
+          ]
+        },
+        {
+          "name": "create_or_update_payment_transaction",
+          "type": "create_or_update_payment_transaction",
+          "waitForReturn": "true",
+          "queue": "salesforce",
+          "dependsOn": [
+            "subscribe_payment"
+          ]
+        },
+        {
+          "name": "update_status_closed",
+          "type": "update_status_closed",
+          "waitForReturn": "true",
+          "queue": "salesforce",
+          "dependsOn": [
+            "create_or_update_payment_transaction"
+          ]
+        },
+        {
+          "name": "update_policy_balance",
+          "type": "update_policy_balance",
+          "waitForReturn": "true",
+          "queue": "salesforce",
+          "dependsOn": [
+            "update_status_closed"
+          ]
+        }
+      ]
+    }
+  ]
+}
