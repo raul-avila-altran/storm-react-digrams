@@ -1,12 +1,16 @@
 import { AxaTask } from "../Task/AxaTask";
 
-export class WorkflowTask {
+export class WorkflowAxa {
     name;
     type;
     removeAtEnd;
-    tasks;
+    simulatedType;
+    tasks = {};
     
-    constructor(){
-
+    constructor(params){
+        this.name=params.name;
+        this.type = params.type;
+        this.removeAtEnd = params.removeAtEnd;
+        this.tasks = params.tasks;
     }
 }

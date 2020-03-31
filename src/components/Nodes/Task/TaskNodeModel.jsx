@@ -4,7 +4,7 @@ import { AxaTask } from './AxaTask';
 
 export class TaskNodeModel extends DefaultNodeModel {
 	
-	axaTask:AxaTask;
+	axaTask;
 	
 	constructor(name, color, task) {
 		super(name,color);
