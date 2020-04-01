@@ -152,6 +152,7 @@
 	border-radius: 5px;
 	margin-bottom: 2px;
 	cursor: pointer;
+	float:left;
 }
 div .menu {
 	float:right !important;
@@ -175,13 +176,22 @@ button{
 	background-color: blue;
 	color: white;
 	font-size: 12px;
+	float:right;
 }
 .content{
 	background-color:#027180;
+	padding: 5px;
 }
 ul{list-style-type:none};
 h3 u{
 	color: blue;
 	align-self: center;
 	margin: 3px;
+}
+div.top {
+	padding: 15px;
+	background-color: #027180;
+	align-self: center;
+	font-weight: 200;
+	color:whitesmoke;
 }

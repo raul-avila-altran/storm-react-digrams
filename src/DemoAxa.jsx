@@ -21,13 +21,26 @@ import './srd.css';
 class DemoAxa extends React.Component {
     //1) setup the diagram engine
     initialPointX = 100;
-    initialPointY = 0;
+    initialPointY = 20;
 
     auxPointX;
     auxPointY;
 
+    workflowNodes = [];
+
     workflowAxa = null;
     engine = new DiagramEngine();
+
+    clearDiagram() {
+        debugger;
+        // this.engine.getDiagramModel().clearDiagram();
+        if (this.workflowNodes.length>0) {
+            this.workflowNodes.map((nodeW, i) => {
+                nodeW.remove();
+            });
+        }
+        this.forceUpdate();
+    }
 
     loadFromFile(isTask) {
         var node = null;
@@ -68,9 +81,6 @@ class DemoAxa extends React.Component {
         });
         return this.workflowAxa.map((object, i) => <option value={i}>{object.name}</option>);
     }
-    renderButtons() {
-        return <div class="menu"><p><label>claims_notification.json</label><select onChange={this.loadElement.bind(this, this.value)}><option />{this.LoadJsonWorkflow()}</select></p></div>;
-    }
 
     componentWillMount() {
         this.engine.registerNodeFactory(new DefaultNodeFactory());
@@ -101,6 +111,7 @@ class DemoAxa extends React.Component {
         node.x = points.x;
         node.y = points.y;
         this.engine.getDiagramModel().addNode(node);
+        this.workflowNodes.push(node);
         this.forceUpdate();
     }
 
@@ -113,6 +124,8 @@ class DemoAxa extends React.Component {
         this.workflowAxa.map((element, i) => {
             var nodeWorkflow = new DefaultNodeModel(element.name, 'red');
             currentWorkflowPort = nodeWorkflow.addPort(new DefaultPortModel(false, 'out-1', 'Out'));
+            this.engine.getDiagramModel().addNode(nodeWorkflow);
+            this.workflowNodes.push(nodeWorkflow);
             element.tasks.map((task, j) => {
                 var nodeTask = null;
                 nodeTask = new TaskNodeModel(task.name, '#00008f');
@@ -121,60 +134,79 @@ class DemoAxa extends React.Component {
                 nodeTask.x = this.auxPointX += 150;
                 nodeTask.y = this.auxPointY;
                 this.engine.getDiagramModel().addNode(nodeTask);
-                this.forceUpdate();
-                var linkTask = new LinkModel();
-                if(j==0){
-                    linkTask.setSourcePort(currentWorkflowPort);
-                    linkTask.setTargetPort(taskPort1);
-                }else{
-                    linkTask.setSourcePort(lastTaskPort);
-                    linkTask.setTargetPort(taskPort2);
-                }
+                this.workflowNodes.push(nodeTask);
+                this.linkPortsTask(j, currentWorkflowPort, taskPort1, lastTaskPort);
                 lastTaskPort = taskPort2;
+                this.forceUpdate();
             });
+           
             var linkWorkflow = new LinkModel();
-            if(i>0){
-                linkWorkflow.setSourcePort(lastWorkflowPort);
-                linkWorkflow.setTargetPort(currentWorkflowPort);
-            }else{
-                lastWorkflowPort = currentWorkflowPort;
-            }
+            lastWorkflowPort = this.linkPortsWorkflow(i, linkWorkflow, lastWorkflowPort, currentWorkflowPort);
+            
             this.auxPointX = this.initialPointX;
             nodeWorkflow.y = this.auxPointY;
-            this.engine.getDiagramModel().addNode(nodeWorkflow);
             this.forceUpdate();
             this.auxPointY += 120;
         });
         this.forceUpdate();
     }
 
-loadWorkflowFiles() {
-    this.workflowAxa = [];
-    workflows.map((element, i) => {
-        this.workflowAxa.push(new WorkflowAxa(JSON.parse(JSON.stringify(element))))
-    });
-}
-render() {
-    return (
-        <div className="conte{nt">
-            {this.renderButtons()}
-            <TrayWidget>
-                <TrayItemWidget model={{ type: 'in' }} name="Task" color="#00008f" />
-                <TrayItemWidget model={{ type: 'out' }} name="Workflow" color="red" />
-            </TrayWidget>
-            <div
-                className="diagram-layer"
-                onDrop={event => {
-                    { this.loadElement(event) }
-                }}
-                onDragOver={event => {
-                    event.preventDefault();
-                }}
-            >
-                <DiagramWidget diagramEngine={this.engine} />
+    linkPortsWorkflow(i, linkWorkflow, lastWorkflowPort, currentWorkflowPort) {
+        if (i > 0) {
+            linkWorkflow.setSourcePort(lastWorkflowPort);
+            linkWorkflow.setTargetPort(currentWorkflowPort);
+            this.engine.getDiagramModel().addLink(linkWorkflow);
+        }
+        return currentWorkflowPort;
+    }
+
+    linkPortsTask(j, currentWorkflowPort, taskPort1, lastTaskPort) {
+        var linkTask = new LinkModel();
+        if (j == 0) {
+            linkTask.setSourcePort(currentWorkflowPort);
+            linkTask.setTargetPort(taskPort1);
+        }
+        else {
+            linkTask.setSourcePort(lastTaskPort);
+            linkTask.setTargetPort(taskPort1);
+        }
+        this.engine.getDiagramModel().addLink(linkTask);
+    }
+
+    loadWorkflowFiles() {
+        this.workflowAxa = [];
+        workflows.map((element, i) => {
+            this.workflowAxa.push(new WorkflowAxa(JSON.parse(JSON.stringify(element))))
+        });
+    }
+
+    renderWorkflows() {
+        return <div class="menu"><p><label>Workflow:&nbsp;</label><select onChange={this.loadElement.bind(this, this.value)}><option />{this.LoadJsonWorkflow()}</select></p></div>;
+    }
+
+    render() {
+        return (
+            <div className="content">
+                <div className="top">Workflow Visualizer</div>
+                {this.renderWorkflows()}
+                <TrayWidget>
+                    <TrayItemWidget model={{ type: 'out' }} name="Workflow" color="red" />
+                    <TrayItemWidget model={{ type: 'in' }} name="Task" color="#00008f" />
+                </TrayWidget>
+                <button onClick={this.clearDiagram.bind(this)}> clear </button>
+                <div
+                    className="diagram-layer"
+                    onDrop={event => {
+                        { this.loadElement(event) }
+                    }}
+                    onDragOver={event => {
+                        event.preventDefault();
+                    }}
+                >
+                    <DiagramWidget diagramEngine={this.engine} />
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    }
 }
 export default DemoAxa;
