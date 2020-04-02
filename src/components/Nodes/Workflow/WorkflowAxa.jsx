@@ -13,4 +13,6 @@ export class WorkflowAxa {
         this.removeAtEnd = params.removeAtEnd;
         this.tasks = params.tasks;
     }
+
+    
 }
