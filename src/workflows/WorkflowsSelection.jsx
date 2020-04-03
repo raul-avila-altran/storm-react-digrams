@@ -10,9 +10,12 @@ import { workflows as SubscriptionContinue } from './subscription_continue.json'
 import { workflows as SubscriptionEnd } from './subscription_end.json';
 import { workflows as SubscriptionInit } from './subscription_init.json';
 import { WorkflowAxa } from './../components/Nodes/Workflow/WorkflowAxa';
+import { RoutesSelection } from './../routes/RoutesSelection';
 
-export class Workflows extends React.Component {
-
+export class WorkflowsSelection extends React.Component {
+    /**
+     * send callback
+     */
     sendData = (e) => {
         let { name, value } = e.target;
         this.setState({
@@ -26,7 +29,13 @@ export class Workflows extends React.Component {
                 myReturn.push(new WorkflowAxa(workflow));
             });
         }
-        this.props.parentCallback(myReturn);
+        this.props.handleChange(myReturn);
+    }
+    /**
+     * handle event from routes
+     */
+    handleChange(){
+        //Manage change of Route
     }
     /**
      * get files from path
@@ -51,7 +60,10 @@ export class Workflows extends React.Component {
 
     render() {
         return (
-            <select onChange={this.sendData} styleId="combo-workflows"><option></option> {this.loadJsonWorkflow()}</select>
+            <div>
+                <label>Routes:</label> <RoutesSelection handleChange={this.handleChange.bind(this, this.value)}></RoutesSelection>
+                <label>Workflow:</label><select onChange={this.sendData} styleId="combo-workflows"><option></option> {this.loadJsonWorkflow()}</select>
+            </div>
         )
     }
 }

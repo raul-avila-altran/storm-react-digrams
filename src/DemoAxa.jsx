@@ -2,7 +2,7 @@ import Lodash from 'lodash';
 import React from 'react';
 import { DefaultLinkFactory, DefaultNodeFactory, DefaultNodeModel, DefaultPortModel, DiagramEngine, DiagramWidget, LinkModel } from 'storm-react-diagrams';
 // import { workflows } from './../src/workflows/balance_update.json';
-import { Workflows } from './workflows/Worfklows';
+import { WorkflowsSelection } from './workflows/WorkflowsSelection';
 import { TaskNodeModel } from './components/Nodes/Task/TaskNodeModel';
 import { TaskPortModel } from './components/Nodes/Task/TaskPortModel';
 import TrayItemWidget from './components/TrayItemWidget';
@@ -28,13 +28,15 @@ class DemoAxa extends React.Component {
      */
     clearDiagram() {
         if (this.workflowNodes.length > 0) {
-            this.workflowNodes.each((nodeW, i) => {
+            this.workflowNodes.forEach((nodeW, i) => {
                 nodeW.remove();
             });
         }
         this.forceUpdate();
     }
-
+    /**
+     * prepare engine config to display diagram canvas
+     */
     componentWillMount() {
         this.engine = new DiagramEngine();
 
@@ -43,67 +45,97 @@ class DemoAxa extends React.Component {
     }
 
     /**
-     * carga Elemento en Canvas
+     * config type of new Node
+     * @param {*} data 
+     * @param {*} node 
+     * @param {*} nodesCount 
+     * @param {*} event 
      */
-    loadElement(event) {
-        let node = null;
-        let data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
-        let nodesCount = Lodash.keys(this.engine.getDiagramModel().getNodes()).length;
+    configNewNode(data, node, nodesCount, event) {
         if (data.type === 'in') {
             node = new TaskNodeModel('Task: ' + (nodesCount + 1), '#00008f');
             node.addPort(new TaskPortModel(true, 'in-1', 'In'));
             node.addPort(new TaskPortModel(true, 'out-1', 'Out'));
-        } else {
+        }
+        else {
             node = new DefaultNodeModel('Worklow: ' + (nodesCount + 1), 'red');
             node.addPort(new DefaultPortModel(false, 'out-1', 'Starts'));
         }
         let points = this.engine.getRelativeMousePoint(event);
         node.x = points.x;
         node.y = points.y;
-        this.engine.getDiagramModel().addNode(node);
-        this.workflowNodes.push(node);
+        return node;
+    }
+
+    /**
+     * carga Elemento en Canvas
+     */
+    dragElement(event) {
+        let data = JSON.parse(event.dataTransfer.getData('storm-diagram-node'));
+        let nodesCount = Lodash.keys(this.engine.getDiagramModel().getNodes()).length;
+        this.workflowNodes.push( this.engine.getDiagramModel().addNode(this.configNewNode(data, null, nodesCount, event)));
         this.forceUpdate();
     }
 
     /**
      * display the selected workflow on the diagram
      */
-    addElementJsonDefinition(e, newWorkflows) {
+    drawElements(e, newWorkflows) {
         this.componentWillMount();
         this.auxPointX = this.initialPointX;
         this.auxPointY = this.initialPointY;
-        let lastWorkflowPort = null;
+        let lastWorkflowPort, lastTaskPort = null;
         let currentWorkflowPort;
-        let lastTaskPort = null;
         if (newWorkflows != null) {
             newWorkflows.forEach((element, i) => {
-                let nodeWorkflow = new DefaultNodeModel(element.name, 'red');
-                currentWorkflowPort = nodeWorkflow.addPort(new DefaultPortModel(false, 'Starts'));
-                this.engine.getDiagramModel().addNode(nodeWorkflow);
-                this.workflowNodes.push(nodeWorkflow);
-                element.tasks.forEach((task, j) => {
-                    let nodeTask = null;
-                    nodeTask = new TaskNodeModel(task.name, '#00008f');
-                    let taskPort1 = nodeTask.addPort(new TaskPortModel(true, 'in', 'Depends on'));
-                    let taskPort2 = nodeTask.addPort(new TaskPortModel(false, 'out', 'Waiting Tasks'));
-                    nodeTask.x = this.auxPointX += this.marginX;
-                    nodeTask.y = this.auxPointY;
-                    this.engine.getDiagramModel().addNode(nodeTask);
-                    this.workflowNodes.push(nodeTask);
-                    this.linkPortsTask(j, currentWorkflowPort, taskPort1, lastTaskPort);
-                    lastTaskPort = taskPort2;
-                });
-
-                let linkWorkflow = new LinkModel();
-                lastWorkflowPort = this.linkPortsWorkflow(i, linkWorkflow, lastWorkflowPort, currentWorkflowPort);
-                this.auxPointX = this.initialPointX;
-                nodeWorkflow.y = this.auxPointY;
-                this.auxPointY += this.marginY;
+                ({ currentWorkflowPort, lastTaskPort, lastWorkflowPort } = this.drawNewWorfklow(element, currentWorkflowPort, lastTaskPort, lastWorkflowPort, i));
             });
             this.forceUpdate();
         }
     }
+
+    drawNewTasks(element, currentWorkflowPort, lastTaskPort) {
+        element.tasks.forEach((task, j) => {
+            let nodeTask = new TaskNodeModel(task.name, '#00008f');
+            nodeTask.x = this.auxPointX += this.marginX;
+            nodeTask.y = this.auxPointY;
+            this.engine.getDiagramModel().addNode(nodeTask);
+            this.workflowNodes.push(nodeTask);
+            this.linkPortsTask(j, currentWorkflowPort, nodeTask.addPort(new TaskPortModel(true, 'in', 'Depends on')), lastTaskPort);
+            lastTaskPort = nodeTask.addPort(new TaskPortModel(false, 'out', 'Waiting Tasks'));
+        });
+        return lastTaskPort;
+    }
+
+    drawNewWorfklow(element, currentWorkflowPort, lastTaskPort, lastWorkflowPort, i) {
+        let nodeWorkflow = new DefaultNodeModel(element.name, 'red');
+        currentWorkflowPort = nodeWorkflow.addPort(new DefaultPortModel(false, 'Starts'));
+        this.engine.getDiagramModel().addNode(nodeWorkflow);
+        this.workflowNodes.push(nodeWorkflow);
+        lastTaskPort = this.drawNewTasks(element, currentWorkflowPort, lastTaskPort);
+        lastWorkflowPort = this.linkPortsWorkflow(i, new LinkModel(), lastWorkflowPort, currentWorkflowPort);
+        this.auxPointX = this.initialPointX;
+        nodeWorkflow.y = this.auxPointY;
+        this.auxPointY += this.marginY;
+        return { currentWorkflowPort, lastTaskPort, lastWorkflowPort };
+    }
+   
     /**
+     * set a new link for the task
+     * @param {*} j 
+     * @param {*} currentWorkflowPort 
+     * @param {*} taskPort1 
+     * @param {*} lastTaskPort 
+     */
+    linkPortsTask(j, currentWorkflowPort, taskPort1, lastTaskPort) {
+        let linkTask = new LinkModel();
+        let checkFirst = j > 0;
+        linkTask.setSourcePort((!checkFirst) ? currentWorkflowPort : lastTaskPort);
+        linkTask.setTargetPort(taskPort1);
+        this.engine.getDiagramModel().addLink(linkTask);
+    }
+
+     /**
      * set a new link for the workflow
      * @param {*} i 
      * @param {*} linkWorkflow 
@@ -118,28 +150,6 @@ class DemoAxa extends React.Component {
         }
         return currentWorkflowPort;
     }
-    /**
-     * set a new link for the task
-     * @param {*} j 
-     * @param {*} currentWorkflowPort 
-     * @param {*} taskPort1 
-     * @param {*} lastTaskPort 
-     * @param {*} newLinks 
-     */
-
-    linkPortsTask(j, currentWorkflowPort, taskPort1, lastTaskPort) {
-        let linkTask = new LinkModel();
-        if (j === 0) {
-            linkTask.setSourcePort(currentWorkflowPort);
-            linkTask.setTargetPort(taskPort1);
-        }
-        else {
-            linkTask.setSourcePort(lastTaskPort);
-            linkTask.setTargetPort(taskPort1);
-        }
-        this.engine.getDiagramModel().addLink(linkTask);
-    }
-
 
     /**
      * renders the workflow selection
@@ -148,18 +158,18 @@ class DemoAxa extends React.Component {
         return (
 
             <div className="content">
-                <div className="top">Workflow Visualizer</div>
-                <div class="menu"><p><label>Workflow:&nbsp;</label><Workflows parentCallback={this.addElementJsonDefinition.bind(this, this.value)}></Workflows></p></div>
-
+                <div className="top"><h1><label>Workflow Visualizer</label></h1></div>
+                <div class="menu">
+                    <p><WorkflowsSelection handleChange={this.drawElements.bind(this, this.value)}></WorkflowsSelection></p>
+                </div>
                 <TrayWidget>
                     <TrayItemWidget model={{ type: 'out' }} name="Workflow" color="red" />
                     <TrayItemWidget model={{ type: 'in' }} name="Task" color="#00008f" />
                 </TrayWidget>
-                <button onClick={this.clearDiagram.bind(this)}> clear </button>
+                <button onClick={() => { this.clearDiagram(this.workflowNodes,this.engine) }}> clear </button>
                 <div
                     className="diagram-layer"
-                    onDrop={event => 
-                        { this.loadElement(event) }
+                    onDrop={event => { this.dragElement(event) }
                     }
                     onDragOver={event => {
                         event.preventDefault();
