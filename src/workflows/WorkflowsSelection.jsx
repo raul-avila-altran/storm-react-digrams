@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { workflows as Balance } from './balance_update.json';
 import { workflows as ClaimsNotification } from './claims_notification.json';
 import { workflows as PaymentNotification } from './payment_notification.json';
@@ -9,60 +9,60 @@ import { workflows as Subscription } from './subscription.json';
 import { workflows as SubscriptionContinue } from './subscription_continue.json';
 import { workflows as SubscriptionEnd } from './subscription_end.json';
 import { workflows as SubscriptionInit } from './subscription_init.json';
-import { WorkflowAxa } from './../components/Nodes/Workflow/WorkflowAxa';
-import { RoutesSelection } from './../routes/RoutesSelection';
+import { RoutesSelection, Selector } from './../routes/RoutesSelection';
+
+const workflowFiles = {
+    Balance,
+    ClaimsNotification,
+    PaymentNotification,
+    PolicyRenewal,
+    SendEsignatureEmail,
+    ServiceNotification,
+    Subscription,
+    SubscriptionContinue,
+    SubscriptionEnd,
+    SubscriptionInit
+};
 
 export class WorkflowsSelection extends React.Component {
-    /**
-     * send callback
-     */
+
+    state = {
+        selectedWorkflow: { value: "" },
+        workflowsAxa: [],
+    }
+    wfState = this.state.workflowsAxa;
+    selWf = this.state.selectedWorkflow.value;
+
+    componentWillMount() {
+        Object.entries(workflowFiles).forEach(workflow => {
+            this.wfState.push({
+                fileName: workflow[0], def: workflow[1]
+            });
+        });
+    }
+
     sendData = (e) => {
         let { name, value } = e.target;
-        this.setState({
-            [name]: e,
-        });
-
-        let myReturn = [];
-        if(value){
-            let workflowsAxa = JSON.parse(value);
-            workflowsAxa.forEach(workflow => {
-                myReturn.push(new WorkflowAxa(workflow));
-            });
-        }
-        this.props.handleChange(myReturn);
+        this.setState({[name]: [value],});
+        const workflows = this.wfState.filter(o => o.fileName === value).map(o => o.def);
+        this.props.handleChange(workflows[0]);
     }
+
     /**
      * handle event from routes
      */
-    handleChange(){
+    handleChange() {
         //Manage change of Route
-    }
-    /**
-     * get files from path
-     */
-    getWorkflows() {
-        return { Balance, ClaimsNotification, PaymentNotification, PolicyRenewal, SendEsignatureEmail, ServiceNotification, Subscription, SubscriptionContinue, SubscriptionEnd, SubscriptionInit };
-    }
-    /**
-     * read from the json file and push items to workflowAxa    let
-     **/
-    loadJsonWorkflow() {
-        let workflows = [];
-        Object.entries(this.getWorkflows()).forEach((element, i) => {
-            let workflowsAxa = [];
-            element[1].forEach(workflow => {
-                workflowsAxa.push(new WorkflowAxa(JSON.parse(JSON.stringify(workflow))));
-            });
-            workflows.push(<option value={JSON.stringify(workflowsAxa)}>{element[0]}</option>);
-        });
-        return workflows;
     }
 
     render() {
+        const Workflow = () =>
+        <Selector options={this.wfState.map(({fileName}) => fileName)} onChangeFuncEve={this.sendData.bind(this.value)}  value={this.selWf} label="Fill Workflow File"/>;
+
         return (
             <div>
-                <label>Routes:</label> <RoutesSelection handleChange={this.handleChange.bind(this, this.value)}></RoutesSelection>
-                <label>Workflow:</label><select onChange={this.sendData} styleId="combo-workflows"><option></option> {this.loadJsonWorkflow()}</select>
+                <Workflow />
+                <RoutesSelection handleChange={this.handleChange.bind(this, this.value)}></RoutesSelection>
             </div>
         )
     }

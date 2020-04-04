@@ -1,13 +1,4 @@
 export class RoutesAxa {
-    type;
-    clientId;
-    paymentType;
-    workflow;
-    sequence;
-    partner;
-    pageId;
-    paymentGateway;
-
     constructor(params) {
         this.type = params.type;
         this.clientId = params.clientId;

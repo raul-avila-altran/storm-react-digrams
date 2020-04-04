@@ -140,6 +140,7 @@
 .tray {
 	max-width: 200px;
 	flex-grow: 0;
+	float:right;
 	flex-shrink: 0;
 }
 
@@ -152,7 +153,7 @@
 	border-radius: 5px;
 	margin-bottom: 2px;
 	cursor: pointer;
-	float:left;
+	float:right;
 }
 div .menu {
 	float:right !important;
@@ -161,8 +162,8 @@ div .menu {
 	border: 1px;
 	border-color: 1px;
 	border-radius: 0.5pc;
-	background-color: grey;
 	list-style: none;
+	padding: 5px;
 }
 button{
 	color: black;
@@ -187,13 +188,15 @@ h3 u{
 	color: blue;
 	align-self: center;
 	margin: 3px;
+	float:right;
 }
 div.top {
-	padding: 15px;
+	padding-left: 15px;
 	background-color: #027180;
 	align-self: center;
 	font-weight: 200;
 	color:whitesmoke;
+	
 }
 div label {
 	color: white;
