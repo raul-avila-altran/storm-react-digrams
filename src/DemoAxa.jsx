@@ -1,5 +1,5 @@
 import Lodash from 'lodash';
-import React from 'react';
+import React, { useState } from 'react';
 import { DefaultLinkFactory, DefaultNodeFactory, DefaultNodeModel, DefaultPortModel, DiagramEngine, DiagramWidget, LinkModel } from 'storm-react-diagrams';
 // import { workflows } from './../src/workflows/balance_update.json';
 import { WorkflowsSelection } from './workflows/WorkflowsSelection';
@@ -9,16 +9,17 @@ import TrayItemWidget from './components/TrayItemWidget';
 import TrayWidget from './components/TrayWidget';
 import './srd.css';
 
-const  initialPointX = 100 ,initialPointY = 20, marginX = 240, marginY = 120;
+const initialPointX = 100, initialPointY = 20, marginX = 240, marginY = 120;
 
 class DemoAxa extends React.Component {
     //1) setup the diagram engine
-   
+
     auxPointX;
     auxPointY;
     workflowNodes = [];
     workflowAxa = null;
     engine = new DiagramEngine();
+    currentWorkflow = "";
 
     /**
      * remove all items from the diagram
@@ -71,6 +72,7 @@ class DemoAxa extends React.Component {
      */
     drawSelectedWorkflow(e, newWorkflows) {
         this.componentWillMount();
+        this.currentFile =newWorkflows;
         this.auxPointX = initialPointX;
         this.auxPointY = initialPointY;
         let lastWorkflowPort, lastTaskPort = null;
@@ -130,18 +132,29 @@ class DemoAxa extends React.Component {
      * renders the workflow selection
      */
     render() {
+        const Visualizer = () =>  <div><label>JSON</label>
+                                    <div><textarea>{JSON.stringify(this.currentFile)}</textarea></div>
+                                 </div>;
         return (
-
             <div className="content">
                 <div class="menu">
                     <div className="top">
-                        <h3><label>Workflow Visualizer</label></h3>
-                        <button onClick={() => { this.clearDiagram(this.workflowNodes, this.engine) }}> clear </button>
-                        <TrayWidget>
-                            <TrayItemWidget model={{ type: 'out' }} name="Workflow" color="red" />
-                            <TrayItemWidget model={{ type: 'in' }} name="Task" color="#00008f" />
-                        </TrayWidget>
-                        <WorkflowsSelection handleChange={this.drawSelectedWorkflow.bind(this, this.value)}></WorkflowsSelection>
+                        <div>
+                            <h3><label>Workflow Visualizer</label></h3>
+                            <div>
+                                <button onClick={() => { this.clearDiagram(this.workflowNodes, this.engine) }}> clear </button>
+                                <TrayWidget>
+                                    <TrayItemWidget model={{ type: 'out' }} name="Workflow" color="red" />
+                                    <TrayItemWidget model={{ type: 'in' }} name="Task" color="#00008f" />
+                                </TrayWidget>
+                            </div>
+                            <div>
+                                <WorkflowsSelection handleChange={this.drawSelectedWorkflow.bind(this, this.value)}></WorkflowsSelection>
+                            </div>
+                            <div>
+                               <Visualizer />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div

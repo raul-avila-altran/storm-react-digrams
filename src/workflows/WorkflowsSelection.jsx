@@ -31,7 +31,7 @@ export class WorkflowsSelection extends React.Component {
         workflowsAxa: [],
     }
     wfState = this.state.workflowsAxa;
-    selWf = this.state.selectedWorkflow.value;
+    
 
     componentWillMount() {
         Object.entries(workflowFiles).forEach(workflow => {
@@ -44,6 +44,8 @@ export class WorkflowsSelection extends React.Component {
     sendData = (e) => {
         let { name, value } = e.target;
         this.setState({[name]: [value],});
+        this.setState({selectedWorkflow : e.target.value});
+        console.log(this.state.selectedWorkflow.value);
         const workflows = this.wfState.filter(o => o.fileName === value).map(o => o.def);
         this.props.handleChange(workflows[0]);
     }
@@ -56,12 +58,12 @@ export class WorkflowsSelection extends React.Component {
     }
 
     render() {
-        const Workflow = () =>
-        <Selector options={this.wfState.map(({fileName}) => fileName)} onChangeFuncEve={this.sendData.bind(this.value)}  value={this.selWf} label="Fill Workflow File"/>;
+        const WorkflowFile = () =>
+        <Selector options={this.wfState.map(({fileName}) => fileName)} onChangeFuncEve={this.sendData}  value={this.state.selectedWorkflow} label="WF File"/>;
 
         return (
             <div>
-                <Workflow />
+                <WorkflowFile />
                 <RoutesSelection handleChange={this.handleChange.bind(this, this.value)}></RoutesSelection>
             </div>
         )
